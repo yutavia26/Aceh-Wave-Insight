@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Dashboard Mitigasi Tsunami Banda Aceh</title>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -29,7 +29,7 @@ color:white;
 
 .dashboard{
 display:grid;
-grid-template-columns:300px 1fr; /* Sedikit dilebarkan agar teks deskripsi posko nyaman dibaca */
+grid-template-columns:300px 1fr; 
 height:100vh;
 }
 
@@ -41,6 +41,12 @@ flex-direction:column;
 gap:15px;
 border-right:1px solid #333;
 overflow:auto;
+transition: transform 0.3s ease-in-out, left 0.3s ease-in-out;
+}
+
+/* Header menu mobile default sembunyi di desktop */
+.mobile-header-panel {
+display: none;
 }
 
 .card{
@@ -54,7 +60,6 @@ border-left:4px solid var(--primary);
 .card .val{font-size:24px;font-weight:bold;color:var(--primary);}
 .card .desc{font-size:11px;color:#777;}
 
-/* Class khusus untuk mengecilkan teks rincian data penduduk */
 .card .val-sub {
     font-size: 13px;
     font-weight: 500;
@@ -62,7 +67,6 @@ border-left:4px solid var(--primary);
     margin: 4px 0;
 }
 
-/* Efek Hover Item Menu Posko */
 .posko-item {
     padding: 8px 10px; 
     background: rgba(255,255,255,0.03); 
@@ -78,7 +82,6 @@ border-left:4px solid var(--primary);
     transform: translateX(3px);
 }
 
-/* Desain Kustom Scrollbar Panel Kiri & List */
 .side-panel-left::-webkit-scrollbar, .posko-list::-webkit-scrollbar {
     width: 5px;
 }
@@ -131,7 +134,6 @@ margin:10px 0;
 cursor:pointer;
 }
 
-/* ================= SUSUNAN LAYOUT KONTROL KANAN (DI-REFRESH BIAR RAPI) ================= */
 .control-stack-right {
 position: absolute;
 top: 15px;
@@ -159,7 +161,14 @@ text-align: center;
 
 .control-stack-right .cancel-btn {
 background: #c62828;
-display: none; /* Muncul lewat JS bawaan */
+display: none; 
+}
+
+/* Tombol menu data khusus HP (Default sembunyi di monitor laptop) */
+.control-stack-right .data-btn {
+display: none;
+background: #222;
+border: 1px solid #444;
 }
 
 .route-info{
@@ -179,7 +188,6 @@ border: 1px solid #444;
 font-size:28px;
 }
 
-/* Menggeser panel rute bawaan ke bawah stack tombol agar tidak bertumpukan */
 .leaflet-routing-container{
 position:absolute !important;
 top:190px !important;
@@ -238,85 +246,94 @@ color:black !important;
     opacity: 0.8;
     border-radius: 3px;
 }
-</style>
-<style>
+
+/* =========================================================================
+   MEDIA QUERY RESPONSIVE KHUSUS LAYAR HP (DIBAWAH 768px)
+   ========================================================================= */
 @media (max-width: 768px) {
-    /* Hancurkan grid biar peta dan panel gak rebutan tempat di HP */
     .dashboard {
-        display: block !important;
-        position: relative !important;
-        width: 100vw !important;
-        height: 100vh !important;
-        overflow: hidden !important;
+        grid-template-columns: 1fr !important; /* Hilangkan kolom kiri di laptop, jadikan 1 kolom peta */
     }
 
-    /* Paksa Peta memenuhi layar penuh HP (Latar belakang) */
-    .map-wrapper {
-        position: absolute !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 100vw !important;
-        height: 100vh !important;
-        z-index: 1 !important;
-    }
-    #map {
-        width: 100% !important;
-        height: 100% !important;
-    }
-
-    /* Sembunyikan panel kiri yang penuh data (Ubah jadi sistem geser/drawer) */
+    /* PAKSA PANEL DATA KIRI MENJADI DRAWER DI LUAR LAYAR */
     .side-panel-left {
         position: fixed !important;
         top: 0 !important;
-        left: -100% !important; /* Sembunyi di luar layar kiri */
-        width: 80vw !important;
-        max-width: 300px !important;
+        left: -320px !important; /* Sembunyikan total di sisi kiri luar */
+        width: 290px !important;
         height: 100vh !important;
-        z-index: 9999 !important; /* Di atas peta */
-        background: #111111 !important;
-        box-shadow: 5px 0 15px rgba(0,0,0,0.5) !important;
-        transition: left 0.3s ease !important;
-        overflow-y: auto !important;
+        z-index: 4000 !important; /* Di atas peta Leaflet */
+        box-shadow: 5px 0 25px rgba(0,0,0,0.6);
+        border-right: 1px solid #333;
     }
 
-    /* Ketika panel kiri aktif/dibuka di HP */
+    /* Saat panel ditambahkan class .active lewat tombol JS */
     .side-panel-left.active {
         left: 0 !important;
     }
 
-    /* Rapikan susunan tombol kontrol di kanan biar gak numpuk */
+    /* Aktifkan tombol header close di dalam panel kiri HP */
+    .mobile-header-panel {
+        display: flex !important;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #333;
+        padding-bottom: 10px;
+        margin-bottom: 5px;
+    }
+
+    /* Munculkan tombol pemicu data di layar HP */
+    .control-stack-right .data-btn {
+        display: block !important;
+    }
+
+    /* Geser tumpukan tombol agak ke bawah sedikit agar pas proporsi jempol */
     .control-stack-right {
-        position: absolute !important;
         top: 10px !important;
         right: 10px !important;
-        z-index: 5000 !important;
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 8px !important;
+        width: 85px !important;
     }
+    
     .control-stack-right button {
-        padding: 8px 12px !important;
-        font-size: 12px !important;
-        border-radius: 6px !important;
+        padding: 8px 6px !important;
+        font-size: 11px !important;
     }
 
-    /* Jinakkan rute jalan Leaflet biar melayang rapi di bawah tengah layar HP */
+    /* SESUAIKAN BOX NAVIGASI RUTE BAWAAN LEAFLET AGAR TIDAK MARUK DI HP */
     .leaflet-routing-container {
         position: fixed !important;
-        bottom: 15px !important;
+        bottom: 10px !important; /* Lempar ke bawah layar agar peta atas bersih */
         top: auto !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
+        right: 50% !important;
+        left: auto !important;
+        transform: translateX(50%) !important; /* Posisikan pas tengah bawah */
         width: 90vw !important;
-        max-width: 340px !important;
-        max-height: 130px !important;
-        z-index: 4500 !important;
-        overflow-y: auto !important;
+        max-width: 320px !important;
+        max-height: 140px !important; /* Batasi tinggi box rute */
+        box-shadow: 0 -4px 15px rgba(0,0,0,0.5) !important;
     }
 
-    /* Sembunyikan tombol zoom (+ -) bawaan biar layar lega */
+    /* Sembunyikan kontrol zoom (+ -) bawaan Leaflet di HP biar gak numpuk semak */
     .leaflet-control-zoom {
         display: none !important;
+    }
+
+    /* Perkecil pop-up jarak waktu buatanmu */
+    .route-info {
+        bottom: 165px !important; /* Mengambang tepat di atas box rute Leaflet */
+        right: 50% !important;
+        transform: translateX(50%) !important;
+        min-width: 180px !important;
+        font-size: 11px !important;
+        padding: 8px !important;
+        text-align: center;
+    }
+
+    /* Perkecil kontainer legenda agar manis di pojok kiri bawah */
+    .legend {
+        max-width: 130px !important;
+        font-size: 10px !important;
+        padding: 8px !important;
     }
 }
 </style>
@@ -325,124 +342,128 @@ color:black !important;
 
 <div class="dashboard">
 
-<div class="side-panel-left">
-    <button onclick="document.querySelector('.side-panel-left').classList.remove('active')" style="width: 100%; background: #cc2222; color: white; border: none; padding: 10px; font-weight: bold; margin-bottom: 10px;">✖ Tutup Menu Data</button>
-    <div class="card">
-        <h4>Jumlah Penduduk</h4>
-        <div class="val-sub">Laki-laki: <span style="color:var(--primary); font-weight:bold;">2.651.986</span> jiwa</div>
-        <div class="val-sub">Perempuan: <span style="color:var(--primary); font-weight:bold;">2.622.885</span> jiwa</div>
-        <div class="val-sub" style="border-top: 1px solid #444; padding-top: 4px; margin-top: 6px;">Total Penduduk: <span style="color:var(--primary); font-weight:bold;">5.274.871</span> jiwa</div>
-        <div class="desc" style="margin-top: 6px;">Data BPS</div>
-    </div>
-    
-    <div class="card">
-        <h4>Titik Evakuasi</h4>
-        <div class="val">10</div>
-        <div class="desc">Shelter Aktif</div>
-    </div>
-    
-    <div class="card">
-        <h4>Routing</h4>
-        <div class="val">Aktif</div>
-        <div class="desc">Alternatif Jalur</div>
-    </div>
+    <div class="side-panel-left" id="panelKiri">
+        <div class="mobile-header-panel">
+            <h4 style="margin: 0; color: var(--primary); font-size: 14px; text-transform: uppercase;">Menu Navigasi</h4>
+            <button onclick="toggleDataPanel()" style="background: none; border: none; color: white; font-size: 22px; cursor: pointer;">×</button>
+        </div>
 
-    <div class="card" style="border-left: 4px solid #11caa0; background: #222; padding: 12px;">
-        <span style="color: #aaa; font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Pusat Data & Info</span>
-        <h5 style="color: #fff; font-size: 13px; margin: 3px 0 10px 0; font-weight: 700;">10 Posko Evakuasi</h5>
+        <div class="card">
+            <h4>Jumlah Penduduk</h4>
+            <div class="val-sub">Laki-laki: <span style="color:var(--primary); font-weight:bold;">2.651.986</span> jiwa</div>
+            <div class="val-sub">Perempuan: <span style="color:var(--primary); font-weight:bold;">2.622.885</span> jiwa</div>
+            <div class="val-sub" style="border-top: 1px solid #444; padding-top: 4px; margin-top: 6px;">Total Penduduk: <span style="color:var(--primary); font-weight:bold;">5.274.871</span> jiwa</div>
+            <div class="desc" style="margin-top: 6px;">Data BPS</div>
+        </div>
         
-        <div class="posko-list" style="max-height: 240px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;">
+        <div class="card">
+            <h4>Titik Evakuasi</h4>
+            <div class="val">10</div>
+            <div class="desc">Shelter Aktif</div>
+        </div>
+        
+        <div class="card">
+            <h4>Routing</h4>
+            <div class="val">Aktif</div>
+            <div class="desc">Alternatif Jalur</div>
+        </div>
+
+        <div class="card" style="border-left: 4px solid #11caa0; background: #222; padding: 12px;">
+            <span style="color: #aaa; font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Pusat Data & Info</span>
+            <h5 style="color: #fff; font-size: 13px; margin: 3px 0 10px 0; font-weight: 700;">10 Posko Evakuasi</h5>
             
-            <div class="posko-item" onclick="fokusKePosko(5.5085, 95.3400, 'Posko Lampeuneurut')">
-                <div style="color: #fff; font-size: 12px; font-weight: bold;">🏠 Posko Lampeuneurut</div>
-                <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Dataran tinggi sektor selatan, zona aman mutlak banjir.</div>
-            </div>
+            <div class="posko-list" style="max-height: 240px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;">
+                
+                <div class="posko-item" onclick="fokusKePosko(5.5085, 95.3400, 'Posko Lampeuneurut')">
+                    <div style="color: #fff; font-size: 12px; font-weight: bold;">🏠 Posko Lampeuneurut</div>
+                    <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Dataran tinggi sektor selatan, zona aman mutlak banjir.</div>
+                </div>
 
-            <div class="posko-item" onclick="fokusKePosko(5.5700, 95.3670, 'Posko Unsyiah')">
-                <div style="color: #fff; font-size: 12px; font-weight: bold;">🏫 Posko Unsyiah</div>
-                <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Komplek USK, gedung teknik bertingkat (Vertical Rescue).</div>
-            </div>
+                <div class="posko-item" onclick="fokusKePosko(5.5700, 95.3670, 'Posko Unsyiah')">
+                    <div style="color: #fff; font-size: 12px; font-weight: bold;">🏫 Posko Unsyiah</div>
+                    <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Komplek USK, gedung teknik bertingkat (Vertical Rescue).</div>
+                </div>
 
-            <div class="posko-item" onclick="fokusKePosko(5.5350, 95.3850, 'Posko Bukit Radar')">
-                <div style="color: #fff; font-size: 12px; font-weight: bold;">⛰️ Posko Bukit Radar</div>
-                <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Elevasi tinggi strategis untuk pengungsian jangka panjang.</div>
-            </div>
+                <div class="posko-item" onclick="fokusKePosko(5.5350, 95.3850, 'Posko Bukit Radar')">
+                    <div style="color: #fff; font-size: 12px; font-weight: bold;">⛰️ Posko Bukit Radar</div>
+                    <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Elevasi tinggi strategis untuk pengungsian jangka panjang.</div>
+                </div>
 
-            <div class="posko-item" onclick="fokusKePosko(5.5480, 95.3180, 'Posko Museum Tsunami')">
-                <div style="color: #fff; font-size: 12px; font-weight: bold;">🏢 Posko Museum Tsunami</div>
-                <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Escape building vertikal khusus pasca bencana 2004.</div>
-            </div>
+                <div class="posko-item" onclick="fokusKePosko(5.5480, 95.3180, 'Posko Museum Tsunami')">
+                    <div style="color: #fff; font-size: 12px; font-weight: bold;">🏢 Posko Museum Tsunami</div>
+                    <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Escape building vertikal khusus pasca bencana 2004.</div>
+                </div>
 
-            <div class="posko-item" onclick="fokusKePosko(5.5600, 95.3500, 'Posko Stadion')">
-                <div style="color: #fff; font-size: 12px; font-weight: bold;">🏟️ Posko Stadion H. Dimurthala</div>
-                <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Tribun beton tinggi dan area lapang di Lampineung.</div>
-            </div>
+                <div class="posko-item" onclick="fokusKePosko(5.5600, 95.3500, 'Posko Stadion')">
+                    <div style="color: #fff; font-size: 12px; font-weight: bold;">🏟️ Posko Stadion H. Dimurthala</div>
+                    <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Tribun beton tinggi dan area lapang di Lampineung.</div>
+                </div>
 
-            <div class="posko-item" onclick="fokusKePosko(5.5200, 95.3300, 'Posko Governor')">
-                <div style="color: #fff; font-size: 12px; font-weight: bold;">🏛️ Posko Pendopo Gubernur</div>
-                <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Komplek komando taktis penanggulangan & SAR udara.</div>
-            </div>
+                <div class="posko-item" onclick="fokusKePosko(5.5200, 95.3300, 'Posko Governor')">
+                    <div style="color: #fff; font-size: 12px; font-weight: bold;">🏛️ Posko Pendopo Gubernur</div>
+                    <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Komplek komando taktis penanggulangan & SAR udara.</div>
+                </div>
 
-            <div class="posko-item" onclick="fokusKePosko(5.5800, 95.3700, 'Posko UIN')">
-                <div style="color: #fff; font-size: 12px; font-weight: bold;">🕌 Posko UIN Ar-Raniry</div>
-                <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Auditorium besar dilengkapi sistem air bersih mandiri.</div>
-            </div>
+                <div class="posko-item" onclick="fokusKePosko(5.5800, 95.3700, 'Posko UIN')">
+                    <div style="color: #fff; font-size: 12px; font-weight: bold;">🕌 Posko UIN Ar-Raniry</div>
+                    <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Auditorium besar dilengkapi sistem air bersih mandiri.</div>
+                </div>
 
-            <div class="posko-item" onclick="fokusKePosko(5.5150, 95.3550, 'Posko Lambaro')">
-                <div style="color: #fff; font-size: 12px; font-weight: bold;">🚛 Posko Lambaro</div>
-                <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Simpul gerbang kota, pusat distribusi bantuan regional.</div>
-            </div>
+                <div class="posko-item" onclick="fokusKePosko(5.5150, 95.3550, 'Posko Lambaro')">
+                    <div style="color: #fff; font-size: 12px; font-weight: bold;">🚛 Posko Lambaro</div>
+                    <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Simpul gerbang kota, pusat distribusi bantuan regional.</div>
+                </div>
 
-            <div class="posko-item" onclick="fokusKePosko(5.5900, 95.3800, 'Posko Darussalam')">
-                <div style="color: #fff; font-size: 12px; font-weight: bold;">🏘️ Posko Pemukiman Darussalam</div>
-                <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Zonasi lokal penampung guna mengurai kepadatan posko inti.</div>
-            </div>
+                <div class="posko-item" onclick="fokusKePosko(5.5900, 95.3800, 'Posko Darussalam')">
+                    <div style="color: #fff; font-size: 12px; font-weight: bold;">🏘️ Posko Pemukiman Darussalam</div>
+                    <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Zonasi lokal penampung guna mengurai kepadatan posko inti.</div>
+                </div>
 
-            <div class="posko-item" onclick="fokusKePosko(5.5400, 95.3100, 'Posko Mesjid Raya')">
-                <div style="color: #fff; font-size: 12px; font-weight: bold;">🕌 Posko Masjid Raya Baiturrahman</div>
-                <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Struktur kokoh historis, andalan evakuasi pusat kota.</div>
-            </div>
+                <div class="posko-item" onclick="fokusKePosko(5.5400, 95.3100, 'Posko Mesjid Raya')">
+                    <div style="color: #fff; font-size: 12px; font-weight: bold;">🕌 Posko Masjid Raya Baiturrahman</div>
+                    <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Struktur kokoh historis, andalan evakuasi pusat kota.</div>
+                </div>
 
+            </div>
+        </div>
+
+        <div class="card" style="border-left: 4px solid #c62828; background: #222; padding: 12px;">
+            <span style="color: #c62828; font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">⚠️ STATUS SIMULASI</span>
+            <h5 style="color: #fff; font-size: 13px; margin: 3px 0 8px 0; font-weight: 700;">Tingkat Kerawanan</h5>
+            <div style="background: rgba(198, 40, 40, 0.12); border: 1px solid rgba(198, 40, 40, 0.3); padding: 8px; border-radius: 6px;">
+                <table style="width: 100%; border: none; font-size: 11px; color: #ccc; border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 3px 0; color: #888;">Pemodelan:</td>
+                        <td style="padding: 3px 0; color: #fff; font-weight: bold; text-align: right;">Megathrust Sumatra</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 3px 0; color: #888;">Magnitudo:</td>
+                        <td style="padding: 3px 0; color: #ff4d4d; font-weight: bold; text-align: right;">9.0 SR</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 3px 0; color: #888;">Potensi:</td>
+                        <td style="padding: 3px 0; color: #ff4d4d; font-weight: bold; text-align: right;">Tsunami Tinggi</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 3px 0; color: #888;">Est. Waktu Tiba:</td>
+                        <td style="padding: 3px 0; color: #ffcc00; font-weight: bold; text-align: right;">~22 Menit</td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 
-    <div class="card" style="border-left: 4px solid #c62828; background: #222; padding: 12px;">
-        <span style="color: #c62828; font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">⚠️ STATUS SIMULASI</span>
-        <h5 style="color: #fff; font-size: 13px; margin: 3px 0 8px 0; font-weight: 700;">Tingkat Kerawanan</h5>
-        <div style="background: rgba(198, 40, 40, 0.12); border: 1px solid rgba(198, 40, 40, 0.3); padding: 8px; border-radius: 6px;">
-            <table style="width: 100%; border: none; font-size: 11px; color: #ccc; border-collapse: collapse;">
-                <tr>
-                    <td style="padding: 3px 0; color: #888;">Pemodelan:</td>
-                    <td style="padding: 3px 0; color: #fff; font-weight: bold; text-align: right;">Megathrust Sumatra</td>
-                </tr>
-                <tr>
-                    <td style="padding: 3px 0; color: #888;">Magnitudo:</td>
-                    <td style="padding: 3px 0; color: #ff4d4d; font-weight: bold; text-align: right;">9.0 SR</td>
-                </tr>
-                <tr>
-                    <td style="padding: 3px 0; color: #888;">Potensi:</td>
-                    <td style="padding: 3px 0; color: #ff4d4d; font-weight: bold; text-align: right;">Tsunami Tinggi</td>
-                </tr>
-                <tr>
-                    <td style="padding: 3px 0; color: #888;">Est. Waktu Tiba:</td>
-                    <td style="padding: 3px 0; color: #ffcc00; font-weight: bold; text-align: right;">~22 Menit</td>
-                </tr>
-            </table>
+    <div class="map-wrapper">
+        <div id="map"></div>
+        <div class="control-stack-right">
+            <button class="data-btn" onclick="toggleDataPanel()">📊 Data</button>
+            <button class="menu-btn" onclick="toggleLayers()">☰ Layers</button>
+            <button class="loc-btn" onclick="pilihLokasi()">📍 Lokasi</button>
+            <button class="home-btn" onclick="resetView()">Center</button>
+            <button class="cancel-btn" id="cancelBtn" onclick="batalRute()">❌ Batal</button>
         </div>
+        <div class="route-info" id="routeInfo"></div>
     </div>
-</div>
-
-<div class="map-wrapper">
-<div id="map"></div>
-<div class="control-stack-right">
-    <button class="btn-toggle-data" onclick="document.querySelector('.side-panel-left').classList.toggle('active')" style="background: #ff6f00; color: white; font-weight: bold;">📊 Data</button>
-    <button class="menu-btn" style="position:static;" onclick="toggleLayers()">☰ Layers</button>
-    <button class="loc-btn" style="position:static;" onclick="pilihLokasi()">📍 Lokasi</button>
-    <button class="home-btn" style="position:static;" onclick="resetView()">Center</button>
-    <button class="cancel-btn" id="cancelBtn" style="position:static;" onclick="batalRute()">❌ Batal</button>
-</div>
-<div class="route-info" id="routeInfo"></div>
-</div>
 
 </div>
 
@@ -584,6 +605,11 @@ poskoData.forEach(p=>{L.marker([p[0],p[1]],{icon:poskoIcon}).addTo(layerEvakuasi
 
 function toggleLayers(){document.getElementById('layerPanel').classList.toggle('active');}
 
+/* Fungsi kontrol pemicu buka/tutup menu geser data kiri di HP */
+function toggleDataPanel() {
+    document.getElementById('panelKiri').classList.toggle('active');
+}
+
 chkEvakuasi.onchange=()=> { chkEvakuasi.checked?map.addLayer(layerEvakuasi):map.removeLayer(layerEvakuasi); updateLegend(); };
 chkKerawanan.onchange=()=> { chkKerawanan.checked?map.addLayer(layerKerawanan):map.removeLayer(layerKerawanan); updateLegend(); };
 chkGenangan.onchange=()=> { chkGenangan.checked?map.addLayer(layerGenangan):map.removeLayer(layerGenangan); updateLegend(); };
@@ -655,7 +681,7 @@ const pilih=prompt("1 = GPS\n2 = Klik Manual");
 if(pilih==="1"){navigator.geolocation.getCurrentPosition(pos=>setLokasi(pos.coords.latitude,pos.coords.longitude));}
 if(pilih==="2"){alert("Klik lokasi anda di peta");pilihManual=true;}
 }
-map.on('click',e=>{if(pilihManual){setLokasi(e.latlng.lat,e.latlng.lng);pilihManual=false;}});
+map.on('click',e=>{if(pManual){setLokasi(e.latlng.lat,e.latlng.lng);pilihManual=false;}});
 function setLokasi(lat,lng){if(userMarker)map.removeLayer(userMarker);userMarker=L.marker([lat,lng]).addTo(map).bindPopup("Lokasi Anda").openPopup();}
 
 function buatRute(lat,lng,nama){
@@ -667,6 +693,11 @@ routingControl.on('routesfound',e=>{
     routeInfo.style.display='block';
     routeInfo.innerHTML=`<b>${nama}</b><br>Jarak ${(r.summary.totalDistance/1000).toFixed(2)} km<br>Waktu ${(r.summary.totalTime/60).toFixed(1)} menit`;
     cancelBtn.style.display='block'; 
+    
+    // Otomatis tutup laci menu data di HP jika jalur rute simulasi ditemukan agar layar lega
+    if(window.innerWidth <= 768) {
+        document.getElementById('panelKiri').classList.remove('active');
+    }
 });
 }
 
@@ -676,6 +707,11 @@ function fokusKePosko(lat, lng, namaPosko) {
         buatRute(lat, lng, namaPosko);
     } else {
         alert("Peta diarahkan ke " + namaPosko + ".\n\nTips: Tentukan lokasi awal Anda terlebih dahulu dengan menekan tombol [📍 Lokasi] untuk memicu kalkulasi rute evakuasi.");
+        
+        // Otomatis langsung tutup panel kiri setelah klik nama posko di HP agar user langsung melihat peta bergeser
+        if(window.innerWidth <= 768) {
+            document.getElementById('panelKiri').classList.remove('active');
+        }
     }
 }
 
