@@ -239,12 +239,94 @@ color:black !important;
     border-radius: 3px;
 }
 </style>
+<style>
+@media (max-width: 768px) {
+    /* Hancurkan grid biar peta dan panel gak rebutan tempat di HP */
+    .dashboard {
+        display: block !important;
+        position: relative !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        overflow: hidden !important;
+    }
+
+    /* Paksa Peta memenuhi layar penuh HP (Latar belakang) */
+    .map-wrapper {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        z-index: 1 !important;
+    }
+    #map {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    /* Sembunyikan panel kiri yang penuh data (Ubah jadi sistem geser/drawer) */
+    .side-panel-left {
+        position: fixed !important;
+        top: 0 !important;
+        left: -100% !important; /* Sembunyi di luar layar kiri */
+        width: 80vw !important;
+        max-width: 300px !important;
+        height: 100vh !important;
+        z-index: 9999 !important; /* Di atas peta */
+        background: #111111 !important;
+        box-shadow: 5px 0 15px rgba(0,0,0,0.5) !important;
+        transition: left 0.3s ease !important;
+        overflow-y: auto !important;
+    }
+
+    /* Ketika panel kiri aktif/dibuka di HP */
+    .side-panel-left.active {
+        left: 0 !important;
+    }
+
+    /* Rapikan susunan tombol kontrol di kanan biar gak numpuk */
+    .control-stack-right {
+        position: absolute !important;
+        top: 10px !important;
+        right: 10px !important;
+        z-index: 5000 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+    .control-stack-right button {
+        padding: 8px 12px !important;
+        font-size: 12px !important;
+        border-radius: 6px !important;
+    }
+
+    /* Jinakkan rute jalan Leaflet biar melayang rapi di bawah tengah layar HP */
+    .leaflet-routing-container {
+        position: fixed !important;
+        bottom: 15px !important;
+        top: auto !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        width: 90vw !important;
+        max-width: 340px !important;
+        max-height: 130px !important;
+        z-index: 4500 !important;
+        overflow-y: auto !important;
+    }
+
+    /* Sembunyikan tombol zoom (+ -) bawaan biar layar lega */
+    .leaflet-control-zoom {
+        display: none !important;
+    }
+}
+</style>
 </head>
 <body>
 
 <div class="dashboard">
 
 <div class="side-panel-left">
+    <button onclick="document.querySelector('.side-panel-left').classList.remove('active')" style="width: 100%; background: #cc2222; color: white; border: none; padding: 10px; font-weight: bold; margin-bottom: 10px;">✖ Tutup Menu Data</button>
     <div class="card">
         <h4>Jumlah Penduduk</h4>
         <div class="val-sub">Laki-laki: <span style="color:var(--primary); font-weight:bold;">2.651.986</span> jiwa</div>
@@ -353,6 +435,7 @@ color:black !important;
 <div class="map-wrapper">
 <div id="map"></div>
 <div class="control-stack-right">
+    <button class="btn-toggle-data" onclick="document.querySelector('.side-panel-left').classList.toggle('active')" style="background: #ff6f00; color: white; font-weight: bold;">📊 Data</button>
     <button class="menu-btn" style="position:static;" onclick="toggleLayers()">☰ Layers</button>
     <button class="loc-btn" style="position:static;" onclick="pilihLokasi()">📍 Lokasi</button>
     <button class="home-btn" style="position:static;" onclick="resetView()">Center</button>
