@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Mitigasi Tsunami Banda Aceh</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css"/>
+
+<style>
+:root{
+--primary:#ff6f00;
+--bg-dark:#121212;
+--bg-panel:#1e1e1e;
+--text:#e0e0e0;
+}
+
+body,html{
+margin:0;
+padding:0;
+height:100%;
+width:100%;
+font-family:'Segoe UI',sans-serif;
+background:var(--bg-dark);
+overflow:hidden;
+color:white;
+}
+
+.dashboard{
+display:grid;
+grid-template-columns:300px 1fr; /* Sedikit dilebarkan agar teks deskripsi posko nyaman dibaca */
+height:100vh;
+}
+
+.side-panel-left{
+background:var(--bg-panel);
+padding:20px;
+display:flex;
+flex-direction:column;
+gap:15px;
+border-right:1px solid #333;
+overflow:auto;
+}
+
+.card{
+background:#2d2d2d;
+padding:15px;
+border-radius:8px;
+border-left:4px solid var(--primary);
+}
+
+.card h4{margin:0;font-size:11px;color:#aaa;}
+.card .val{font-size:24px;font-weight:bold;color:var(--primary);}
+.card .desc{font-size:11px;color:#777;}
+
+/* Class khusus untuk mengecilkan teks rincian data penduduk */
+.card .val-sub {
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+    margin: 4px 0;
+}
+
+/* Efek Hover Item Menu Posko */
+.posko-item {
+    padding: 8px 10px; 
+    background: rgba(255,255,255,0.03); 
+    border-radius: 6px; 
+    cursor: pointer; 
+    border: 1px solid rgba(255,255,255,0.05); 
+    transition: 0.2s;
+}
+
+.posko-item:hover {
+    background: rgba(255, 111, 0, 0.15) !important;
+    border-color: var(--primary) !important;
+    transform: translateX(3px);
+}
+
+/* Desain Kustom Scrollbar Panel Kiri & List */
+.side-panel-left::-webkit-scrollbar, .posko-list::-webkit-scrollbar {
+    width: 5px;
+}
+.side-panel-left::-webkit-scrollbar-thumb, .posko-list::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 4px;
+}
+
+.map-wrapper{
+position:relative;
+width:100%;
+height:100%;
+}
+
+#map{
+width:100%;
+height:100%;
+}
+
+.side-panel-right{
+position:fixed;
+top:0;
+right:-320px;
+width:280px;
+height:100vh;
+background:var(--bg-panel);
+padding:20px;
+transition:.3s;
+z-index:3000;
+overflow:auto;
+}
+
+.side-panel-right.active{
+right:0;
+}
+
+.close-layer{
+float:right;
+background:none;
+border:none;
+color:white;
+font-size:22px;
+cursor:pointer;
+}
+
+.item{
+display:flex;
+gap:10px;
+margin:10px 0;
+cursor:pointer;
+}
+
+/* ================= SUSUNAN LAYOUT KONTROL KANAN (DI-REFRESH BIAR RAPI) ================= */
+.control-stack-right {
+position: absolute;
+top: 15px;
+right: 15px;
+z-index: 2500;
+display: flex;
+flex-direction: column;
+gap: 8px;
+width: 100px;
+}
+
+.control-stack-right button {
+background: #ff6f00;
+color: white;
+border: none;
+padding: 10px 12px;
+border-radius: 4px;
+cursor: pointer;
+font-weight: 600;
+font-size: 12px;
+box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+width: 100%;
+text-align: center;
+}
+
+.control-stack-right .cancel-btn {
+background: #c62828;
+display: none; /* Muncul lewat JS bawaan */
+}
+
+.route-info{
+position:absolute;
+bottom:20px;
+right:20px;
+background:#222;
+padding:10px;
+border-radius:8px;
+display:none;
+z-index:2500;
+min-width:220px;
+border: 1px solid #444;
+}
+
+.posko-icon{
+font-size:28px;
+}
+
+/* Menggeser panel rute bawaan ke bawah stack tombol agar tidak bertumpukan */
+.leaflet-routing-container{
+position:absolute !important;
+top:190px !important;
+right:15px !important;
+left:auto !important;
+width:260px !important;
+background:white !important;
+color:black !important;
+z-index:2400 !important;
+border-radius:8px !important;
+overflow:auto;
+max-height:380px;
+box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.leaflet-routing-container *{
+color:black !important;
+}
+
+.legend {
+    background: #1e1e1e;
+    padding: 12px;
+    line-height: 20px;
+    color: #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    z-index: 2000;
+    border: 1px solid #333;
+    font-size: 12px;
+    max-width: 200px;
+}
+.legend h4 {
+    margin: 0 0 8px 0;
+    font-size: 13px;
+    color: #ff6f00;
+    border-bottom: 1px solid #444;
+    padding-bottom: 4px;
+}
+.legend-section {
+    margin-bottom: 10px;
+}
+.legend-section:last-child {
+    margin-bottom: 0;
+}
+.legend-title {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 4px;
+    color: #fff;
+}
+.legend i {
+    width: 16px;
+    height: 16px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.8;
+    border-radius: 3px;
+}
+</style>
+</head>
+<body>
+
+<div class="dashboard">
+
+<div class="side-panel-left">
+    <div class="card">
+        <h4>Jumlah Penduduk</h4>
+        <div class="val-sub">Laki-laki: <span style="color:var(--primary); font-weight:bold;">2.651.986</span> jiwa</div>
+        <div class="val-sub">Perempuan: <span style="color:var(--primary); font-weight:bold;">2.622.885</span> jiwa</div>
+        <div class="val-sub" style="border-top: 1px solid #444; padding-top: 4px; margin-top: 6px;">Total Penduduk: <span style="color:var(--primary); font-weight:bold;">5.274.871</span> jiwa</div>
+        <div class="desc" style="margin-top: 6px;">Data BPS</div>
+    </div>
+    
+    <div class="card">
+        <h4>Titik Evakuasi</h4>
+        <div class="val">10</div>
+        <div class="desc">Shelter Aktif</div>
+    </div>
+    
+    <div class="card">
+        <h4>Routing</h4>
+        <div class="val">Aktif</div>
+        <div class="desc">Alternatif Jalur</div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid #11caa0; background: #222; padding: 12px;">
+        <span style="color: #aaa; font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Pusat Data & Info</span>
+        <h5 style="color: #fff; font-size: 13px; margin: 3px 0 10px 0; font-weight: 700;">10 Posko Evakuasi</h5>
+        
+        <div class="posko-list" style="max-height: 240px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;">
+            
+            <div class="posko-item" onclick="fokusKePosko(5.5085, 95.3400, 'Posko Lampeuneurut')">
+                <div style="color: #fff; font-size: 12px; font-weight: bold;">🏠 Posko Lampeuneurut</div>
+                <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Dataran tinggi sektor selatan, zona aman mutlak banjir.</div>
+            </div>
+
+            <div class="posko-item" onclick="fokusKePosko(5.5700, 95.3670, 'Posko Unsyiah')">
+                <div style="color: #fff; font-size: 12px; font-weight: bold;">🏫 Posko Unsyiah</div>
+                <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Komplek USK, gedung teknik bertingkat (Vertical Rescue).</div>
+            </div>
+
+            <div class="posko-item" onclick="fokusKePosko(5.5350, 95.3850, 'Posko Bukit Radar')">
+                <div style="color: #fff; font-size: 12px; font-weight: bold;">⛰️ Posko Bukit Radar</div>
+                <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Elevasi tinggi strategis untuk pengungsian jangka panjang.</div>
+            </div>
+
+            <div class="posko-item" onclick="fokusKePosko(5.5480, 95.3180, 'Posko Museum Tsunami')">
+                <div style="color: #fff; font-size: 12px; font-weight: bold;">🏢 Posko Museum Tsunami</div>
+                <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Escape building vertikal khusus pasca bencana 2004.</div>
+            </div>
+
+            <div class="posko-item" onclick="fokusKePosko(5.5600, 95.3500, 'Posko Stadion')">
+                <div style="color: #fff; font-size: 12px; font-weight: bold;">🏟️ Posko Stadion H. Dimurthala</div>
+                <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Tribun beton tinggi dan area lapang di Lampineung.</div>
+            </div>
+
+            <div class="posko-item" onclick="fokusKePosko(5.5200, 95.3300, 'Posko Governor')">
+                <div style="color: #fff; font-size: 12px; font-weight: bold;">🏛️ Posko Pendopo Gubernur</div>
+                <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Komplek komando taktis penanggulangan & SAR udara.</div>
+            </div>
+
+            <div class="posko-item" onclick="fokusKePosko(5.5800, 95.3700, 'Posko UIN')">
+                <div style="color: #fff; font-size: 12px; font-weight: bold;">🕌 Posko UIN Ar-Raniry</div>
+                <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Auditorium besar dilengkapi sistem air bersih mandiri.</div>
+            </div>
+
+            <div class="posko-item" onclick="fokusKePosko(5.5150, 95.3550, 'Posko Lambaro')">
+                <div style="color: #fff; font-size: 12px; font-weight: bold;">🚛 Posko Lambaro</div>
+                <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Simpul gerbang kota, pusat distribusi bantuan regional.</div>
+            </div>
+
+            <div class="posko-item" onclick="fokusKePosko(5.5900, 95.3800, 'Posko Darussalam')">
+                <div style="color: #fff; font-size: 12px; font-weight: bold;">🏘️ Posko Pemukiman Darussalam</div>
+                <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Zonasi lokal penampung guna mengurai kepadatan posko inti.</div>
+            </div>
+
+            <div class="posko-item" onclick="fokusKePosko(5.5400, 95.3100, 'Posko Mesjid Raya')">
+                <div style="color: #fff; font-size: 12px; font-weight: bold;">🕌 Posko Masjid Raya Baiturrahman</div>
+                <div style="color: #aaa; font-size: 10px; margin-top: 2px;">Struktur kokoh historis, andalan evakuasi pusat kota.</div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid #c62828; background: #222; padding: 12px;">
+        <span style="color: #c62828; font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">⚠️ STATUS SIMULASI</span>
+        <h5 style="color: #fff; font-size: 13px; margin: 3px 0 8px 0; font-weight: 700;">Tingkat Kerawanan</h5>
+        <div style="background: rgba(198, 40, 40, 0.12); border: 1px solid rgba(198, 40, 40, 0.3); padding: 8px; border-radius: 6px;">
+            <table style="width: 100%; border: none; font-size: 11px; color: #ccc; border-collapse: collapse;">
+                <tr>
+                    <td style="padding: 3px 0; color: #888;">Pemodelan:</td>
+                    <td style="padding: 3px 0; color: #fff; font-weight: bold; text-align: right;">Megathrust Sumatra</td>
+                </tr>
+                <tr>
+                    <td style="padding: 3px 0; color: #888;">Magnitudo:</td>
+                    <td style="padding: 3px 0; color: #ff4d4d; font-weight: bold; text-align: right;">9.0 SR</td>
+                </tr>
+                <tr>
+                    <td style="padding: 3px 0; color: #888;">Potensi:</td>
+                    <td style="padding: 3px 0; color: #ff4d4d; font-weight: bold; text-align: right;">Tsunami Tinggi</td>
+                </tr>
+                <tr>
+                    <td style="padding: 3px 0; color: #888;">Est. Waktu Tiba:</td>
+                    <td style="padding: 3px 0; color: #ffcc00; font-weight: bold; text-align: right;">~22 Menit</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="map-wrapper">
+<div id="map"></div>
+<div class="control-stack-right">
+    <button class="menu-btn" style="position:static;" onclick="toggleLayers()">☰ Layers</button>
+    <button class="loc-btn" style="position:static;" onclick="pilihLokasi()">📍 Lokasi</button>
+    <button class="home-btn" style="position:static;" onclick="resetView()">Center</button>
+    <button class="cancel-btn" id="cancelBtn" style="position:static;" onclick="batalRute()">❌ Batal</button>
+</div>
+<div class="route-info" id="routeInfo"></div>
+</div>
+
+</div>
+
+<div class="side-panel-right" id="layerPanel">
+<button class="close-layer" onclick="toggleLayers()">✖</button>
+<h3>Basemap</h3>
+<label class="item"><input type="radio" name="base" value="osm"> OSM</label>
+<label class="item"><input type="radio" name="base" value="road" checked> Google Road</label>
+<label class="item"><input type="radio" name="base" value="satellite"> Satellite</label>
+<label class="item"><input type="radio" name="base" value="terrain"> Terrain</label>
+<hr>
+<h3>Layer Mitigasi</h3>
+<label class="item"><input type="checkbox" id="chkEvakuasi" checked> Titik Posko</label>
+<label class="item"><input type="checkbox" id="chkKerawanan"> Peta Kerawanan</label>
+<label class="item"><input type="checkbox" id="chkGenangan"> Peta Genangan</label>
+<label class="item"><input type="checkbox" id="chkKerentanan"> Peta Kerentanan</label>
+<label class="item"><input type="checkbox" id="chkBatas"> Batas Wilayah</label>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+
+<script>
+
+const aceh=[5.54829,95.32375];
+const map=L.map('map').setView(aceh,13);
+
+const basemaps={
+osm:L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
+road:L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{subdomains:['mt0','mt1','mt2','mt3']}),
+satellite:L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{subdomains:['mt0','mt1','mt2','mt3']}),
+terrain:L.tileLayer('https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',{subdomains:['mt0','mt1','mt2','mt3']})
+};
+
+basemaps.road.addTo(map);
+
+document.querySelectorAll('input[name="base"]').forEach(r=>{
+r.addEventListener('change',e=>{
+Object.values(basemaps).forEach(l=>map.removeLayer(l));
+basemaps[e.target.value].addTo(map);
+});
+});
+
+let userMarker=null;
+let pilihManual=false;
+let routingControl=null;
+
+let layerGenangan = L.layerGroup();
+let layerKerentanan = L.layerGroup();
+let layerKerawanan = L.layerGroup();
+let layerBatas = L.layerGroup();
+
+// 1. FETCH KERAWANAN
+fetch('Kerawanan.json')
+    .then(response => response.json())
+    .then(data => {
+        L.geoJSON(data, {
+            style: function(feature) {
+                let props = feature.properties;
+                let nilaiKerawanan = props.Kerawanan || props.kerawanan || props.gridcode || Object.values(props)[0];
+                let warnaKerawanan = "#f1c40f"; 
+                let kelas = String(nilaiKerawanan).toLowerCase().trim();
+                if (kelas === "3" || kelas === "tinggi") warnaKerawanan = "#e74c3c";
+                else if (kelas === "2" || kelas === "sedang") warnaKerawanan = "#e67e22";
+                else if (kelas === "1" || kelas === "rendah") warnaKerawanan = "#f1c40f";
+                return { stroke: false, fillColor: warnaKerawanan, fillOpacity: 0.45, weight: 0 };
+            }
+        }).addTo(layerKerawanan);
+    });
+
+// 2. FETCH GENANGAN
+fetch('inundansi_1.geojson')
+    .then(response => response.json())
+    .then(data => {
+        L.geoJSON(data, {
+            style: function(feature) {
+                let nilaiGenangan = feature.properties.Genangan;
+                let warnaGenangan = "#ffffff"; 
+                let kelas = String(nilaiGenangan).toLowerCase().trim();
+                
+                if (kelas === "3" || kelas === "tinggi") {
+                    warnaGenangan = "#1e3a8a"; 
+                } else if (kelas === "2" || kelas === "sedang") {
+                    warnaGenangan = "#38bdf8"; 
+                } else if (kelas === "1" || kelas === "rendah") {
+                    warnaGenangan = "#ffffff"; 
+                }
+                
+                return { stroke: false, fillColor: warnaGenangan, fillOpacity: 0.65, weight: 0 };
+            }
+        }).addTo(layerGenangan);
+    });
+
+// 3. FETCH KERENTANAN
+fetch('kerentanan_2.json')
+    .then(response => response.json())
+    .then(data => {
+        L.geoJSON(data, {
+            style: function(feature) {
+                let nilaiKerentanan = feature.properties.Kerentanan;
+                let warnaKerentanan = "#2ecc71"; 
+                let kelas = String(nilaiKerentanan).toLowerCase().trim();
+                if (kelas === "3" || kelas === "tinggi") warnaKerentanan = "#e74c3c";
+                else if (kelas === "2" || kelas === "sedang") warnaKerentanan = "#f1c40f";
+                return { color: "#ffffff", fillColor: warnaKerentanan, fillOpacity: 0.4, weight: 0 };
+            }
+        }).addTo(layerKerentanan);
+    });
+
+// 4. FETCH BATAS ACEH
+fetch('Batas Aceh.json')
+    .then(response => response.json())
+    .then(data => {
+        L.geoJSON(data, {
+            style: {
+                color: "#ff0000",
+                weight: 2,
+                fill: false
+            }
+        }).addTo(layerBatas);
+    });
+
+// 5. LAYER EVAKUASI
+const layerEvakuasi=L.layerGroup().addTo(map);
+const poskoData=[
+    [5.5085,95.3400,"Posko Lampeuneurut"],
+    [5.5700,95.3670,"Posko Unsyiah"],
+    [5.5350,95.3850,"Posko Bukit Radar"],
+    [5.5480,95.3180,"Posko Museum Tsunami"],
+    [5.5600,95.3500,"Posko Stadion"],
+    [5.5200,95.3300,"Posko Governor"], 
+    [5.5800,95.3700,"Posko UIN"],
+    [5.5150,95.3550,"Posko Lambaro"],
+    [5.5900,95.3800,"Posko Darussalam"],
+    [5.5400,95.3100,"Posko Mesjid Raya"]
+];
+const poskoIcon=L.divIcon({html:"🏠",className:"posko-icon"});
+poskoData.forEach(p=>{L.marker([p[0],p[1]],{icon:poskoIcon}).addTo(layerEvakuasi).bindPopup(`<b>${p[2]}</b>`).on('click',()=>buatRute(p[0],p[1],p[2]));});
+
+function toggleLayers(){document.getElementById('layerPanel').classList.toggle('active');}
+
+chkEvakuasi.onchange=()=> { chkEvakuasi.checked?map.addLayer(layerEvakuasi):map.removeLayer(layerEvakuasi); updateLegend(); };
+chkKerawanan.onchange=()=> { chkKerawanan.checked?map.addLayer(layerKerawanan):map.removeLayer(layerKerawanan); updateLegend(); };
+chkGenangan.onchange=()=> { chkGenangan.checked?map.addLayer(layerGenangan):map.removeLayer(layerGenangan); updateLegend(); };
+chkKerentanan.onchange=()=> { chkKerentanan.checked?map.addLayer(layerKerentanan):map.removeLayer(layerKerentanan); updateLegend(); };
+chkBatas.onchange=()=> { chkBatas.checked?map.addLayer(layerBatas):map.removeLayer(layerBatas); updateLegend(); };
+
+const legendControl = L.control({position: 'bottomleft'});
+
+legendControl.onAdd = function (map) {
+    this._div = L.DomUtil.create('div', 'legend');
+    this.update();
+    return this._div;
+};
+
+legendControl.update = function () {
+    let htmlContent = '<h4>Legenda Mitigasi</h4>';
+    let adaLayerAktif = false;
+
+    if (chkEvakuasi.checked) {
+        htmlContent += '<div class="legend-section"><span class="legend-title">Fasilitas</span>';
+        htmlContent += '<i style="background:transparent; font-size:14px; line-height:16px; text-align:center;">🏠</i>Titik Posko Evakuasi<br></div>';
+        adaLayerAktif = true;
+    }
+
+    if (chkKerawanan.checked) {
+        htmlContent += '<div class="legend-section"><span class="legend-title">Peta Kerawanan</span>';
+        htmlContent += '<i style="background:#e74c3c"></i>Kerawanan Tinggi<br>';
+        htmlContent += '<i style="background:#e67e22"></i>Kerawanan Sedang<br>';
+        adaLayerAktif = true;
+    }
+
+    if (chkGenangan.checked) {
+        htmlContent += '<div class="legend-section"><span class="legend-title">Peta Genangan</span>';
+        htmlContent += '<i style="background:#1e3a8a"></i>Genangan Tinggi<br>';
+        htmlContent += '<i style="background:#38bdf8"></i>Genangan Sedang<br>';
+        htmlContent += '<i style="background:#ffffff"></i>Genangan Rendah<br></div>';
+        adaLayerAktif = true;
+    }
+
+    if (chkKerentanan.checked) {
+        htmlContent += '<div class="legend-section"><span class="legend-title">Peta Kerentanan</span>';
+        htmlContent += '<i style="background:#e74c3c"></i>Kerentanan Tinggi<br>';
+        htmlContent += '<i style="background:#f1c40f"></i>Kerentanan Sedang<br>';
+        htmlContent += '<i style="background:#2ecc71"></i>Kerentanan Rendah<br></div>';
+        adaLayerAktif = true;
+    }
+
+    if (chkBatas.checked) {
+        htmlContent += '<div class="legend-section"><span class="legend-title">Administrasi</span>';
+        htmlContent += '<i style="border:2px solid #ff0000; height:12px; background:transparent;"></i>Batas Aceh<br></div>';
+        adaLayerAktif = true;
+    }
+
+    if (!adaLayerAktif) {
+        htmlContent += '<em>Aktifkan layer untuk melihat legenda</em>';
+    }
+
+    this._div.innerHTML = htmlContent;
+};
+
+legendControl.addTo(map);
+
+function updateLegend() {
+    legendControl.update();
+}
+
+function pilihLokasi(){
+const pilih=prompt("1 = GPS\n2 = Klik Manual");
+if(pilih==="1"){navigator.geolocation.getCurrentPosition(pos=>setLokasi(pos.coords.latitude,pos.coords.longitude));}
+if(pilih==="2"){alert("Klik lokasi anda di peta");pilihManual=true;}
+}
+map.on('click',e=>{if(pilihManual){setLokasi(e.latlng.lat,e.latlng.lng);pilihManual=false;}});
+function setLokasi(lat,lng){if(userMarker)map.removeLayer(userMarker);userMarker=L.marker([lat,lng]).addTo(map).bindPopup("Lokasi Anda").openPopup();}
+
+function buatRute(lat,lng,nama){
+if(!userMarker){alert("Pilih lokasi Anda terlebih dahulu menggunakan tombol 📍 Lokasi!");return;}
+if(routingControl)map.removeControl(routingControl);
+routingControl=L.Routing.control({waypoints:[userMarker.getLatLng(),L.latLng(lat,lng)],showAlternatives:true,createMarker:()=>null}).addTo(map);
+routingControl.on('routesfound',e=>{
+    const r=e.routes[0];
+    routeInfo.style.display='block';
+    routeInfo.innerHTML=`<b>${nama}</b><br>Jarak ${(r.summary.totalDistance/1000).toFixed(2)} km<br>Waktu ${(r.summary.totalTime/60).toFixed(1)} menit`;
+    cancelBtn.style.display='block'; 
+});
+}
+
+function fokusKePosko(lat, lng, namaPosko) {
+    map.flyTo([lat, lng], 15);
+    if(userMarker) {
+        buatRute(lat, lng, namaPosko);
+    } else {
+        alert("Peta diarahkan ke " + namaPosko + ".\n\nTips: Tentukan lokasi awal Anda terlebih dahulu dengan menekan tombol [📍 Lokasi] untuk memicu kalkulasi rute evakuasi.");
+    }
+}
+
+function batalRute(){if(routingControl){map.removeControl(routingControl);routingControl=null;}routeInfo.style.display='none';cancelBtn.style.display='none';}
+function resetView(){map.flyTo(aceh,13);}
+</script>
+<script src="responsive-map.js"></script>
+</body>
+</html>

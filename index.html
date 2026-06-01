@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Aceh Wave Insight - Sistem Informasi Pemetaan Risiko Tsunami" />
+    <meta name="author" content="Geomatika" />
+    <title>Aceh Wave Insight - Minimum Impact</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    
+    <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    
+    <link href="css/styles.css" rel="stylesheet" />
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+</head>
+<body id="page-top" data-bs-spy="scroll" data-bs-target="#mainNav" data-bs-offset="100">
+
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav" style="box-shadow: none !important; border-bottom: none !important;">
+        <div class="container px-4 px-lg-5">
+            <a class="navbar-brand" href="#page-top">Aceh Wave Insight</a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                Menu <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#Urgensi" style="border-bottom: none !important; box-shadow: none !important;">Tentang</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#Histori" style="border-bottom: none !important; box-shadow: none !important;">Histori</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#projects" style="border-bottom: none !important; box-shadow: none !important;">Peta</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#Mitigasi" style="border-bottom: none !important; box-shadow: none !important;">Mitigasi</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    
+
+    <header class="masthead">
+        <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+            <div class="d-flex justify-content-center">
+                <div class="text-center">
+                    <h1 class="mx-auto my-0 text-uppercase">Aceh Wave Insight</h1>
+                    <h2 class="text-white-50 mx-auto mt-2 mb-5">Smart Tsunami Mapping dalam Mengungkap Pola Resiko Gelombang Secara Presisi di Wilayah Aceh.</h2>
+                    <a class="btn btn-primary" href="#Urgensi">Start</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="storymap-section" id="Urgensi" style="background-color: #161616; padding: 80px 0 30px 0;">
+        <div class="container px-4 px-lg-5 text-center">
+            <h3 class="text-white mb-4" style="font-weight: 700;">Urgensi Sistem Mitigasi</h3>
+            
+            <div class="storymap-container" style="width: 100%; max-width: 1000px; height: 480px; background: #1e1e1e; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.7); overflow: hidden; position: relative; margin: 0 auto;">
+                <div class="swiper mySwiper" style="width: 100%; height: 100%;">
+                    <div class="swiper-wrapper">
+                        
+                        <div class="swiper-slide" style="display: flex; flex-direction: row; align-items: stretch; height: 100%; background: #1e1e1e;">
+                            <div class="slide-visual" style="flex: 1.1; background-image: url('assets/img/guncangan.webp'); background-size: cover; background-position: center; background-repeat: no-repeat; position: relative; height: 100%;">
+                                <div style="content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to right, rgba(0,0,0,0.1), rgba(30,30,30,0.3));"></div>
+                            </div>
+                            <div class="slide-content" style="flex: 1; padding: 40px; display: flex; flex-direction: column; justify-content: center; text-align: left;">
+                                <div class="slide-tag" style="color: #64a19d; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px;">01. Potensi Ancaman</div>
+                                <h2 style="margin: 0 0 15px 0; font-size: 24px; color: #ffffff; font-weight: 700; line-height: 1.3;">Mekanisme Gempa Megathrust Sumatra</h2>
+                                <p style="margin: 0 0 25px 0; font-size: 14px; color: #aaa; line-height: 1.6;">Pantai barat Aceh berhadapan langsung dengan zona subduksi aktif tempat Lempeng Indo-Australia menunjam di bawah Lempeng Eurasia. Area kuncian ini menyimpan energi masif yang sewaktu-waktu dapat memicu gempa vertikal skala besar yang membangkitkan gelombang tsunami.</p>
+                                <a href="#projects" class="btn btn-sm btn-primary align-self-start px-3 py-2">Lihat Model Peta &rarr;</a>
+                            </div>
+                        </div>
+
+                        <div class="swiper-slide" style="display: flex; flex-direction: row; align-items: stretch; height: 100%; background: #1e1e1e;">
+                            <div class="slide-visual" style="flex: 1.1; background-image: url('assets/img/terjangan.webp'); background-size: cover; background-position: center; background-repeat: no-repeat; position: relative; height: 100%;">
+                                <div style="content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to right, rgba(0,0,0,0.1), rgba(30,30,30,0.3));"></div>
+                            </div>
+                            <div class="slide-content" style="flex: 1; padding: 40px; display: flex; flex-direction: column; justify-content: center; text-align: left;">
+                                <div class="slide-tag" style="color: #64a19d; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px;">02. Simulasi Ilmiah</div>
+                                <h2 style="margin: 0 0 15px 0; font-size: 24px; color: #ffffff; font-weight: 700; line-height: 1.3;">Visualisasi Pemodelan Tinggi Gelombang</h2>
+                                <p style="margin: 0 0 25px 0; font-size: 14px; color: #aaa; line-height: 1.6;">Berdasarkan permodelan numerik penjalaran gelombang, wilayah pesisir Banda Aceh diproyeksikan memiliki tingkat kerawanan tinggi. Tinggi gelombang diestimasikan dapat mencapai batas maksimum daratan dengan waktu tiba gelombang yang sangat krusial.</p>
+                                <a href="#projects" class="btn btn-sm btn-primary align-self-start px-3 py-2">Buka Peta Interaktif &rarr;</a>
+                            </div>
+                        </div>
+
+                        <div class="swiper-slide" style="display: flex; flex-direction: row; align-items: stretch; height: 100%; background: #1e1e1e;">
+    <div class="slide-visual" style="flex: 1.1; background-image: url('assets/img/urgensi.png'); background-size: cover; background-position: center; background-repeat: no-repeat; position: relative; height: 100%;">
+        <div style="content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to right, rgba(0,0,0,0.1), rgba(30,30,30,0.3));"></div>
+    </div>
+                            <div class="slide-content" style="flex: 1; padding: 40px; display: flex; flex-direction: column; justify-content: center; text-align: left;">
+                                <div class="slide-tag" style="color: #64a19d; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px;">03. Panduan Pengguna</div>
+                                <h2 style="margin: 0 0 15px 0; font-size: 24px; color: #ffffff; font-weight: 700; line-height: 1.3;">Cara Membaca Peta Mitigasi Efektif</h2>
+                                <p style="margin: 0 0 25px 0; font-size: 14px; color: #aaa; line-height: 1.6;">Gunakan panel kontrol layer pada pojok kanan atas peta untuk beralih antara data tingkat genangan atau tingkat kerawanan sosial. Identifikasi lokasi posko terdekat melalui simbol marker dan gunakan rute tercepat menuju zona evakuasi mandiri.</p>
+                                <a href="#projects" class="btn btn-sm btn-primary align-self-start px-3 py-2">Mulai Analisis Sekarang &rarr;</a>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="swiper-button-next" style="color: #64a19d !important; transform: scale(0.6);"></div>
+                    <div class="swiper-button-prev" style="color: #64a19d !important; transform: scale(0.6);"></div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-section py-5" style="background: linear-gradient(to bottom, #161616 0%, rgba(22, 22, 22, 0.9) 100%);">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-5 align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0 text-start">
+                    <span class="text-uppercase fw-bold" style="color: #64a19d; letter-spacing: 2px; font-size: 0.85rem;">Profil Geografis</span>
+                    <h2 class="text-white mb-4 mt-1" style="font-weight: 700; font-size: 2.2rem;">Karakratistik Wilayah Aceh</h2>
+                    <p class="text-white-50 mb-4">
+                        Aceh merupakan wilayah strategis di ujung utara Pulau Sumatra yang berbatasan langsung dengan Samudra Hindia. Berada di dekat zona subduksi aktif, wilayah ini memiliki karakteristik spasial yang unik sekaligus menantang dalam konteks kebencanaan.
+                    </p>
+                    
+                    <div class="d-flex mb-3">
+                        <div class="flex-shrink-0 mt-1">
+                            <div class="d-flex align-items-center justify-content-center rounded-circle" style="width: 45px; height: 45px; background-color: rgba(100, 161, 157, 0.15);">
+                                <i class="fas fa-globe-asia" style="color: #64a19d; font-size: 1.2rem;"></i>
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <h5 class="text-white mb-1" style="font-size: 1.05rem; font-weight: 600;">Posisi Strategis & Maritim</h5>
+                            <p class="text-white-50 small">Berbatasan langsung dengan Samudra Hindia dan Selat Malaka, menjadikannya gerbang maritim utama di barat Indonesia.</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex mb-3">
+                        <div class="flex-shrink-0 mt-1">
+                            <div class="d-flex align-items-center justify-content-center rounded-circle" style="width: 45px; height: 45px; background-color: rgba(100, 161, 157, 0.15);">
+                                <i class="fas fa-mountain-sun" style="color: #64a19d; font-size: 1.1rem;"></i>
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <h5 class="text-white mb-1" style="font-size: 1.05rem; font-weight: 600;">Zona Megathrust Aktif</h5>
+                            <p class="text-white-50 small">Pertemuan Lempeng Indo-Australia dan Eurasia (Segmen Aceh–Andaman) yang aktif mengumpulkan energi tektonik besar.</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex">
+                        <div class="flex-shrink-0 mt-1">
+                            <div class="d-flex align-items-center justify-content-center rounded-circle" style="width: 45px; height: 45px; background-color: rgba(100, 161, 157, 0.15);">
+                                <i class="fas fa-water" style="color: #64a19d; font-size: 1.1rem;"></i>
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <h5 class="text-white mb-1" style="font-size: 1.05rem; font-weight: 600;">Topografi Pesisir Landai</h5>
+                            <p class="text-white-50 small">Kawasan pantai yang cenderung rendah and padat penduduk, meningkatkan eskalasi risiko paparan gelombang tsunami.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="position-relative p-2 rounded shadow-lg" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08);">
+                        <img class="img-fluid rounded" src="assets/img/banda_aceh_banner.webp" alt="Pesisir Aceh" style="filter: brightness(0.75) contrast(1.1); min-height: 380px; object-fit: cover; width: 100%;" />
+                        <div class="position-absolute bottom-0 start-0 m-4 p-3 rounded text-start" style="background: rgba(0,0,0,0.65); backdrop-filter: blur(6px); border-left: 4px solid #64a19d; max-width: 80%;">
+                            <p class="text-white fw-bold mb-0 small"><i class="fas fa-map-marker-alt text-danger me-1"></i> Frontline Sumatra Utara</p>
+                            <span class="text-white-50" style="font-size: 0.75rem;">Kawasan Prioritas Mitigasi Bencana Nasional.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-section text-center py-5" id="Histori" style="background-color: #161616;">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-lg-10">
+                    <h2 class="text-white mb-4">Kilas Balik Tragedi 2004</h2>
+                    <p class="text-white-50 mb-5">
+                        Data statistik di bawah ini menunjukkan skala dampak dari peristiwa megathrust yang membentuk urgensi sistem mitigasi Aceh Wave Insight saat ini.
+                    </p>
+                    
+                    <div class="row gx-0 mb-5 justify-content-center">
+                        <div class="col-md-4 mb-3">
+                            <div class="bg-black p-4 m-2" style="border-bottom: 3px solid #64a19d;">
+                                <h3 class="text-white mb-0">9.1 - 9.3</h3>
+                                <p class="text-white-50 small text-uppercase">Magnitudo (Mw)</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="bg-black p-4 m-2" style="border-bottom: 3px solid #64a19d;">
+                                <h3 class="text-white mb-0">170.000+</h3>
+                                <p class="text-white-50 small text-uppercase">Korban Jiwa (Indonesia)</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="bg-black p-4 m-2" style="border-bottom: 3px solid #64a19d;">
+                                <h3 class="text-white mb-0">&gt;30 Meter</h3>
+                                <p class="text-white-50 small text-uppercase">Tinggi Gelombang Maksimum</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row text-start mt-4 mb-5">
+                        <div class="col-lg-6">
+                            <div class="p-4 bg-light rounded shadow-sm mb-4">
+                                <h5 class="text-black"><i class="fas fa-info-circle me-2"></i> Analisis Spasial</h5>
+                                <p class="text-black-50 small">
+                                    Deformasi dasar laut di segmen Aceh–Andaman menyebabkan perpindahan volume air laut yang masif dalam waktu kurang dari 30 menit.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="p-4 bg-light rounded shadow-sm mb-4">
+                                <h5 class="text-black"><i class="fas fa-map-marker-alt me-2"></i> Area Terdampak</h5>
+                                <p class="text-black-50 small">
+                                    Wilayah pesisir Banda Aceh dan Aceh Besar mengalami kerusakan total hingga radius beberapa kilometer dari garis pantai.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row gx-4 mt-5">
+                        <h4 class="text-white mb-4 text-center">Visualisasi Peristiwa</h4>
+                        
+                        <div class="col-lg-4 mb-4 text-center">
+                            <div class="position-relative overflow-hidden rounded shadow border border-secondary">
+                                <img src="assets/img/guncangan.webp" class="img-fluid" alt="Gempa" style="min-height: 250px; object-fit: cover; width: 100%;">
+                                <div class="bg-dark p-3 text-start">
+                                    <h6 class="text-white fw-bold">Guncangan Hebat</h6>
+                                    <p class="text-white-50 mb-0" style="font-size: 0.75rem;">Gempa dangkal dengan durasi sekitar 8-10 menit yang meruntuhkan bangunan di Banda Aceh.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 mb-4 text-center">
+                            <div class="position-relative overflow-hidden rounded shadow border border-secondary">
+                                <img src="assets/img/terjangan.webp" class="img-fluid" alt="Tsunami" style="min-height: 250px; object-fit: cover; width: 100%;">
+                                <div class="bg-dark p-3 text-start">
+                                    <h6 class="text-white fw-bold">Terjangan Gelombang</h6>
+                                    <p class="text-white-50 mb-0" style="font-size: 0.75rem;">Air laut surut sesaat sebelum gelombang hitam pekat membawa material menghantam daratan.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 mb-4 text-center">
+                            <div class="position-relative overflow-hidden rounded shadow border border-secondary">
+                                <img src="assets/img/lumpuh.webp" class="img-fluid" alt="Pasca" style="min-height: 250px; object-fit: cover; width: 100%;">
+                                <div class="bg-dark p-3 text-start">
+                                    <h6 class="text-white fw-bold">Lumpuhnya Kota</h6>
+                                    <p class="text-white-50 mb-0" style="font-size: 0.75rem;">Akses komunikasi terputus total, mengubah wajah pesisir Aceh dalam hitungan jam.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="projects-section bg-light" id="projects">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-0 mb-4 mb-lg-5 align-items-center">
+                <div class="col-xl-8 col-lg-7">
+                    <div id="map">
+                        <div class="map-interactive-badge">
+                            <span>●</span> INTERACTIVE GIS SYSTEM
+                        </div>
+                        
+                        <div class="map-shadow-wrapper" style="pointer-events: none;">
+                            <div class="map-glass-panel">
+                                <h6>Analisis Spasial</h6>
+                                <p>Gunakan fitur zoom dan geser untuk memetakan rute evakuasi mandiri secara presisi.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-5">
+                    <div class="featured-text text-center text-lg-left p-4">
+                        <a href="webgis.html" target="_blank" style="text-decoration: none;">
+                            <h4 class="text-black">Peta Potensi Tsunami &amp; Sebaran Titik Evakuasi &rarr;</h4>
+                        </a>
+                        <p class="text-black-50 mb-0">
+                            Visualisasi interaktif mengenai zona kerawanan tsunami dan lokasi titik evakuasi di wilayah Banda Aceh untuk mendukung mitigasi bencana.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="projects-section bg-light pt-0" id="posko-info">
+        <div class="container px-4 px-lg-5">
+            <div class="text-center mb-5">
+                <h2 class="text-black mb-2">Pusat Data &amp; Informasi 10 Posko Evakuasi</h2>
+                <p class="text-muted">Daftar lengkap titik penyelamatan berdasarkan analisis geospasial mitigasi bencana tsunami 9 SR.</p>
+            </div>
+
+            <div class="row gx-0 mb-5 mb-lg-0 justify-content-center">
+                <div class="col-lg-6"><img class="img-fluid h-100" src="assets/img/Lampeuneurut.jpeg" alt="..." style="object-fit: cover; min-height: 300px;" /></div>
+                <div class="col-lg-6">
+                    <div class="bg-black text-center h-100 project">
+                        <div class="d-flex h-100">
+                            <div class="project-text w-100 my-auto text-center text-lg-left">
+                                <h4 class="text-white">Posko Lampeuneurut</h4>
+                                <p class="text-white-50 mb-3 px-3" style="font-size: 0.9rem; text-align: justify;">
+                                    <strong>Geografis &amp; Sejarah:</strong> Terletak di dataran tinggi bagian selatan, menjadikannya zona aman mutlak dari terjangan air. Sering digunakan sebagai basis bantuan logistik sekunder.
+                                </p>
+                                <button class="btn btn-sm btn-outline-light" onclick="bukaDanFokusPosko('Posko Lampeuneurut')">Buka di WebGIS &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-0 justify-content-center">
+                <div class="col-lg-6 order-lg-first">
+                    <div class="bg-black text-center h-100 project">
+                        <div class="d-flex h-100">
+                            <div class="project-text w-100 my-auto text-center text-lg-right">
+                                <h4 class="text-white">Posko Unsyiah</h4>
+                                <p class="text-white-50 mb-3 px-3" style="font-size: 0.9rem; text-align: justify;">
+                                    <strong>Geografis &amp; Sejarah:</strong> Berada di komplek universitas tertua di Aceh. Memanfaatkan gedung teknik bertingkat sebagai tempat evakuasi vertikal (*Vertical Rescue*) masyarakat sektor timur.
+                                </p>
+                                <button class="btn btn-sm btn-outline-light" onclick="bukaDanFokusPosko('Posko Unsyiah')">Buka di WebGIS &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6"><img class="img-fluid h-100" src="assets/img/uinsyah.jpeg" alt="..." style="object-fit: cover; min-height: 300px;" /></div>
+            </div>
+
+            <div class="row gx-0 mb-5 mb-lg-0 justify-content-center">
+                <div class="col-lg-6"><img class="img-fluid h-100" src="assets/img/bukit.jpeg" alt="..." style="object-fit: cover; min-height: 300px;" /></div>
+                <div class="col-lg-6">
+                    <div class="bg-black text-center h-100 project">
+                        <div class="d-flex h-100">
+                            <div class="project-text w-100 my-auto text-center text-lg-left">
+                                <h4 class="text-white">Posko Bukit Radar</h4>
+                                <p class="text-white-50 mb-3 px-3" style="font-size: 0.9rem; text-align: justify;">
+                                    <strong>Geografis &amp; Sejarah:</strong> Titik topografi tinggi ideal untuk pengungsian massal jangka panjang karena elevasinya bebas banjir tsunami dan memiliki ruang terbuka luas.
+                                </p>
+                                <button class="btn btn-sm btn-outline-light" onclick="bukaDanFokusPosko('Posko Bukit Radar')">Buka di WebGIS &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-0 justify-content-center">
+                <div class="col-lg-6 order-lg-first">
+                    <div class="bg-black text-center h-100 project">
+                        <div class="d-flex h-100">
+                            <div class="project-text w-100 my-auto text-center text-lg-right">
+                                <h4 class="text-white">Posko Museum Tsunami</h4>
+                                <p class="text-white-50 mb-3 px-3" style="font-size: 0.9rem; text-align: justify;">
+                                    <strong>Geografis &amp; Sejarah:</strong> Dirancang khusus pasca bencana 2004 sebagai monumen ingatan sekaligus difungsikan sebagai gedung penyelamatan darurat vertikal (*Escape Building*).
+                                </p>
+                                <button class="btn btn-sm btn-outline-light" onclick="bukaDanFokusPosko('Posko Museum Tsunami')">Buka di WebGIS &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6"><img class="img-fluid h-100" src="assets/img/museum.jpeg" alt="..." style="object-fit: cover; min-height: 300px;" /></div>
+            </div>
+
+            <div class="row gx-0 mb-5 mb-lg-0 justify-content-center">
+                <div class="col-lg-6"><img class="img-fluid h-100" src="assets/img/stadion.jpeg" alt="..." style="object-fit: cover; min-height: 300px;" /></div>
+                <div class="col-lg-6">
+                    <div class="bg-black text-center h-100 project">
+                        <div class="d-flex h-100">
+                            <div class="project-text w-100 my-auto text-center text-lg-left">
+                                <h4 class="text-white">Posko Stadion H. Dimurthala</h4>
+                                <p class="text-white-50 mb-3 px-3" style="font-size: 0.9rem; text-align: justify;">
+                                    <strong>Geografis &amp; Sejarah:</strong> Area publik strategis di wilayah Lampineung. Memiliki tribun beton tinggi dan lapangan terbuka lebar untuk pendirian tenda darurat pengungsi.
+                                </p>
+                                <button class="btn btn-sm btn-outline-light" onclick="bukaDanFokusPosko('Posko Stadion')">Buka di WebGIS &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-0 justify-content-center">
+                <div class="col-lg-6 order-lg-first">
+                    <div class="bg-black text-center h-100 project">
+                        <div class="d-flex h-100">
+                            <div class="project-text w-100 my-auto text-center text-lg-right">
+                                <h4 class="text-white">Posko Pendopo Gubernur</h4>
+                                <p class="text-white-50 mb-3 px-3" style="font-size: 0.9rem; text-align: justify;">
+                                    <strong>Geografis &amp; Sejarah:</strong> Komplek peninggalan sejarah pertahanan administrasi kota. Digunakan sebagai pusat komando taktis penanggulangan bencana dan SAR udara.
+                                </p>
+                                <button class="btn btn-sm btn-outline-light" onclick="bukaDanFokusPosko('Posko Gubernur')">Buka di WebGIS &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6"><img class="img-fluid h-100" src="assets/img/pendopo.jpeg" alt="..." style="object-fit: cover; min-height: 300px;" /></div>
+            </div>
+
+            <div class="row gx-0 mb-5 mb-lg-0 justify-content-center">
+                <div class="col-lg-6"><img class="img-fluid h-100" src="assets/img/uin.jpeg" alt="..." style="object-fit: cover; min-height: 300px;" /></div>
+                <div class="col-lg-6">
+                    <div class="bg-black text-center h-100 project">
+                        <div class="d-flex h-100">
+                            <div class="project-text w-100 my-auto text-center text-lg-left">
+                                <h4 class="text-white">Posko UIN Ar-Raniry</h4>
+                                <p class="text-white-50 mb-3 px-3" style="font-size: 0.9rem; text-align: justify;">
+                                    <strong>Geografis &amp; Sejarah:</strong> Terletak di Kopelma Darussalam. Memiliki kapasitas auditorium besar serta sistem penyediaan air bersih mandiri untuk kebutuhan pengungsi.
+                                </p>
+                                <button class="btn btn-sm btn-outline-light" onclick="bukaDanFokusPosko('Posko UIN')">Buka di WebGIS &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-0 justify-content-center">
+                <div class="col-lg-6 order-lg-first">
+                    <div class="bg-black text-center h-100 project">
+                        <div class="d-flex h-100">
+                            <div class="project-text w-100 my-auto text-center text-lg-right">
+                                <h4 class="text-white">Posko Lambaro</h4>
+                                <p class="text-white-50 mb-3 px-3" style="font-size: 0.9rem; text-align: justify;">
+                                    <strong>Geografis &amp; Sejarah:</strong> Titik simpul transportasi gerbang masuk kota. Berfungsi sebagai posko utama distribusi bantuan regional yang datang dari luar wilayah kota.
+                                </p>
+                                <button class="btn btn-sm btn-outline-light" onclick="bukaDanFokusPosko('Posko Lambaro')">Buka di WebGIS &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6"><img class="img-fluid h-100" src="assets/img/lambaro.jpeg" alt="..." style="object-fit: cover; min-height: 300px;" /></div>
+            </div>
+
+            <div class="row gx-0 mb-5 mb-lg-0 justify-content-center">
+                <div class="col-lg-6"><img class="img-fluid h-100" src="assets/img/pemukiman.jpeg" alt="..." style="object-fit: cover; min-height: 300px;" /></div>
+                <div class="col-lg-6">
+                    <div class="bg-black text-center h-100 project">
+                        <div class="d-flex h-100">
+                            <div class="project-text w-100 my-auto text-center text-lg-left">
+                                <h4 class="text-white">Posko Pemukiman Darussalam</h4>
+                                <p class="text-white-50 mb-3 px-3" style="font-size: 0.9rem; text-align: justify;">
+                                    <strong>Geografis &amp; Sejarah:</strong> Menyediakan kapasitas penampungan darurat berbasis zonasi pemukiman lokal guna mengurai kepadatan penampungan pada titik universitas utama.
+                                </p>
+                                <button class="btn btn-sm btn-outline-light" onclick="bukaDanFokusPosko('Posko Darussalam')">Buka di WebGIS &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-0 justify-content-center">
+                <div class="col-lg-6 order-lg-first">
+                    <div class="bg-black text-center h-100 project">
+                        <div class="d-flex h-100">
+                            <div class="project-text w-100 my-auto text-center text-lg-right">
+                                <h4 class="text-white">Posko Masjid Raya Baiturrahman</h4>
+                                <p class="text-white-50 mb-3 px-3" style="font-size: 0.9rem; text-align: justify;">
+                                    <strong>Geografis &amp; Sejarah:</strong> Struktur bersejarah yang kokoh berdiri saat diterjang tsunami 2004. Lantai atas bangunan dan koridor luar menjadi andalan utama evakuasi darurat pusat kota.
+                                </p>
+                                <button class="btn btn-sm btn-outline-light" onclick="bukaDanFokusPosko('Posko Mesjid Raya')">Buka di WebGIS &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6"><img class="img-fluid h-100" src="assets/img/masjid.jpeg" alt="..." style="object-fit: cover; min-height: 300px;" /></div>
+            </div>
+        </div>
+    </section>       
+
+    <section class="about-section text-center" id="Mitigasi" style="padding-top: 5rem; padding-bottom: 5rem; background-color: #161616;">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center mb-5">
+                <div class="col-lg-8">
+                    <h2 class="text-white mb-3">Langkah-Langkah Mitigasi Tsunami</h2>
+                    <p class="text-white-50">
+                        Panduan kesiapsiagaan menghadapi ancaman megathrust dan tsunami skala besar di wilayah pesisir Banda Aceh.
+                    </p>
+                </div>
+            </div>
+
+            <div class="row gx-4 gx-lg-5 justify-content-center text-start mb-5">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 bg-dark text-white border-secondary">
+                        <div class="card-body p-4">
+                            <div class="mb-3 text-warning" style="font-size: 1.2rem;">🟢 <strong>Pra-Bencana</strong></div>
+                            <h5 class="card-title text-white">Kesiapan &amp; Perencanaan</h5>
+                            <ul class="text-white-50 ps-3 small" style="text-align: justify;">
+                                <li>Kenali tanda alam (gempa kuat terasa lama atau air laut surut tiba-tiba).</li>
+                                <li>Pahami rute evakuasi terdekat menuju zona aman / dataran tinggi.</li>
+                                <li>Siapkan Tas Siaga Bencana (dokumen, obat, senter, makanan instan).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 bg-dark text-white border-secondary">
+                        <div class="card-body p-4">
+                            <div class="mb-3 text-danger" style="font-size: 1.2rem;">🚨 <strong>Saat Bencana</strong></div>
+                            <h5 class="card-title text-white">Tindakan Darurat</h5>
+                            <ul class="text-white-50 ps-3 small" style="text-align: justify;">
+                                <li>Jika gempa berhenti, segera lari menjauh dari pantai tanpa menunggu sirine.</li>
+                                <li>Gunakan prinsip 20-20-20 (Gempa 20 detik, waktu evakuasi 20 menit, lari ke tinggi 20 meter).</li>
+                                <li>Utamakan evakuasi berjalan kaki untuk menghindari macet total di jalan raya.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 bg-dark text-white border-secondary">
+                        <div class="card-body p-4">
+                            <div class="mb-3 text-info" style="font-size: 1.2rem;">🔵 <strong>Pasca-Bencana</strong></div>
+                            <h5 class="card-title text-white">Pemulihan &amp; Evakuasi</h5>
+                            <ul class="text-white-50 ps-3 small" style="text-align: justify;">
+                                <li>Tetap berada di zona tinggi hingga ada pengumuman resmi tsunami telah berakhir.</li>
+                                <li>Waspadai gelombang susulan yang bisa jadi lebih besar dari gelombang pertama.</li>
+                                <li>Cari posko medis terdekat dan hindari bangunan yang retak akibat gempa.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-10">
+                    <div class="p-4 rounded" style="background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                        <h5 class="text-white mb-3">🔗 Portal Informasi &amp; Edukasi Resmi</h5>
+                        <div class="d-flex flex-wrap justify-content-center gap-2">
+                            <a href="https://warning.bmkg.go.id/" target="_blank" class="btn btn-outline-light btn-sm px-3">
+                                🌐 Peringatan Dini Tsunami BMKG
+                            </a>
+                            <a href="https://drive.google.com/file/d/1dmjjfOqgCNqQnPBn3wJd9tOiQBt3DU5l/view?usp=sharing" target="_blank" class="btn btn-outline-light btn-sm px-3">
+                                📚 Buku Saku Tanggap Bencana BNPB
+                            </a>
+                            </a>
+                            <a href="https://bpba.acehprov.go.id/" target="_blank" class="btn btn-outline-light btn-sm px-3">
+                                🏢 BPBA Provinsi Aceh
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center mb-5">
+                <div class="col-lg-10">
+                    <div class="p-4 rounded" style="background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                        <h5 class="text-white mb-3">🔗 Source</h5>
+                        <div class="d-flex flex-wrap justify-content-center gap-2">
+                            <a href="https://drive.google.com/drive/folders/10rtt8oVMgbC-lOdWzh5oRq30Q46BpVEw?usp=sharing" target="_blank" class="btn btn-outline-light btn-sm px-3">
+                                🌐 Referensi
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer bg-black small text-center text-white-50">
+        <div class="container px-4 px-lg-5">Copyright &copy; Aceh Wave Insight 2026</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/scripts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script>
+        // 1. Inisialisasi Peta Leaflet (Titik default di Banda Aceh)
+        var map = L.map('map').setView([5.54829, 95.32375], 13);
+
+        // Tambahkan peta dasar (Basemap) OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Contoh Marker Titik Utama
+        L.marker([5.54829, 95.32375]).addTo(map)
+            .bindPopup('<b>Banda Aceh</b><br>Kawasan Prioritas Mitigasi Tsunami.')
+            .openPopup();
+
+        // 2. Fungsi Mengarahkan Tombol Posko Menuju Halaman WebGIS Riil
+        function bukaDanFokusPosko(namaPosko) {
+            let namaAman = encodeURIComponent(namaPosko);
+            window.open(`webgis.html?posko=${namaAman}`, '_blank');
+        }
+
+        // 3. Inisialisasi Swiper Carousel Urgensi Mitigasi
+        var swiper = new Swiper(".mySwiper", {
+            loop: true,
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+        });
+
+        // Perbaikan otomatis ukuran peta terhadap layout framework agar tidak blank/terpotong
+        setTimeout(function () {
+            map.invalidateSize();
+        }, 500);
+    </script>
+    <script src="responsive-map.js"></script>
+</body>
+</html>
